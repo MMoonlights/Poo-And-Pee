@@ -1,0 +1,14 @@
+name: PooAndPee
+version: '${project.version}'
+main: de.mmoonlight.pooandpee.PooAndPee
+api-version: '1.13'
+description: 'A simple plugin that adds /pee and /poo commands'
+authors: [mmoonlight]
+
+commands:
+  pee:
+    description: Pee command
+    usage: /pee
+  poo:
+    description: Poo command
+    usage: /poo

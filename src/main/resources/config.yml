@@ -1,0 +1,23 @@
+# Messages
+# Note: HEX colors (#RRGGBB) and color codes (&c, &a, etc.) are supported
+messages:
+  only-players: "#DB3B3BOnly players can use this command!"
+  pee-command: "#FFFF00You peed!"
+  poo-command: "#662500You pooped!"
+  cooldown: "#DB3B3BYou need to wait %time% seconds before using this command again!"
+
+# Cooldowns in seconds
+cooldowns:
+  pee: 4
+  poo: 4
+
+# Item settings
+items:
+  pee:
+    material: YELLOW_WOOL
+    duration: 5
+    velocity: 0.5
+  poo:
+    material: BROWN_WOOL
+    duration: 5
+    velocity: 0.2
