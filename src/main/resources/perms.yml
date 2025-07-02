@@ -1,0 +1,15 @@
+# Permissions configuration
+# 
+# Use 'all' to allow everyone to use the command
+# Use a permission node (e.g. 'pooandpee.pee') to restrict access
+#
+# Examples:
+# pee: all                  - Everyone can use /pee
+# pee: pooandpee.pee        - Only players with pooandpee.pee permission can use /pee
+# poo: pooandpee.poo        - Only players with pooandpee.poo permission can use /poo
+# reload: pooandpee.admin   - Only players with pooandpee.admin permission can reload the plugin
+
+# Default permissions (set to 'all' to allow everyone)
+pee: all
+poo: all
+reload: pooandpee.admin

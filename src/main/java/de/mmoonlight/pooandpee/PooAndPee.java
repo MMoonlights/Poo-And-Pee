@@ -6,6 +6,8 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,6 +18,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -32,10 +36,13 @@ public final class PooAndPee extends JavaPlugin implements Listener {
     private Material peeMaterial = null;
     private Material pooMaterial = null;
     private boolean pluginEnabled = true;
+    private FileConfiguration permsConfig = null;
+    private File permsFile = null;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
+        setupPermsConfig();
         
         String version = getServer().getBukkitVersion();
         
@@ -74,6 +81,51 @@ public final class PooAndPee extends JavaPlugin implements Listener {
         
         getCommand("pee").setExecutor(new PeeCommand());
         getCommand("poo").setExecutor(new PooCommand());
+        getCommand("pooandpee").setExecutor(new ReloadCommand());
+    }
+    
+    private void setupPermsConfig() {
+        permsFile = new File(getDataFolder(), "perms.yml");
+        if (!permsFile.exists()) {
+            saveResource("perms.yml", false);
+        }
+        permsConfig = YamlConfiguration.loadConfiguration(permsFile);
+        
+        if (!permsConfig.contains("pee")) {
+            permsConfig.set("pee", "all");
+        }
+        if (!permsConfig.contains("poo")) {
+            permsConfig.set("poo", "all");
+        }
+        if (!permsConfig.contains("reload")) {
+            permsConfig.set("reload", "pooandpee.admin");
+        }
+        
+        try {
+            permsConfig.save(permsFile);
+        } catch (IOException e) {
+            getLogger().severe("Could not save perms.yml: " + e.getMessage());
+        }
+    }
+    
+    public void reloadPlugin() {
+        reloadConfig();
+        setupPermsConfig();
+        setupMaterials();
+    }
+    
+    private boolean hasPermission(Player player, String type) {
+        if (player.isOp()) {
+            return true;
+        }
+        
+        String permission = permsConfig.getString(type, "all");
+        
+        if (permission.equalsIgnoreCase("all")) {
+            return true;
+        }
+        
+        return player.hasPermission(permission);
     }
     
     private boolean configContainsHexColors() {
@@ -215,6 +267,13 @@ public final class PooAndPee extends JavaPlugin implements Listener {
             }
 
             Player player = (Player) sender;
+            
+            if (!hasPermission(player, "pee")) {
+                String message = getConfig().getString("messages.no-permission", "&cYou don't have permission to use this command!");
+                player.sendMessage(formatColors(message));
+                return true;
+            }
+            
             UUID playerUUID = player.getUniqueId();
             
             int cooldownTime = getConfig().getInt("cooldowns.pee", 60);
@@ -279,6 +338,13 @@ public final class PooAndPee extends JavaPlugin implements Listener {
             }
 
             Player player = (Player) sender;
+            
+            if (!hasPermission(player, "poo")) {
+                String message = getConfig().getString("messages.no-permission", "&cYou don't have permission to use this command!");
+                player.sendMessage(formatColors(message));
+                return true;
+            }
+            
             UUID playerUUID = player.getUniqueId();
             
             int cooldownTime = getConfig().getInt("cooldowns.poo", 120);
@@ -325,6 +391,31 @@ public final class PooAndPee extends JavaPlugin implements Listener {
                 remainingTicks[0] -= 4;
             }, 0L, 4L);
             
+            return true;
+        }
+    }
+    
+    private class ReloadCommand implements CommandExecutor {
+        @Override
+        public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+            if (args.length == 0) {
+                sender.sendMessage(formatColors("#DB3B3B/pooandpee reload"));
+                return true;
+            }
+            
+            if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
+                if (!(sender instanceof Player) || hasPermission((Player) sender, "reload")) {
+                    reloadPlugin();
+                    String message = getConfig().getString("messages.reload-success", "&aPoo and Pee plugin reloaded successfully!");
+                    sender.sendMessage(formatColors(message));
+                } else {
+                    String message = getConfig().getString("messages.no-permission", "&cYou don't have permission to use this command!");
+                    sender.sendMessage(formatColors(message));
+                }
+                return true;
+            }
+            
+            sender.sendMessage(formatColors("#DB3B3B/pooandpee reload"));
             return true;
         }
     }

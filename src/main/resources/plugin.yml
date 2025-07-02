@@ -12,3 +12,7 @@ commands:
   poo:
     description: Poo command
     usage: /poo
+  pooandpee:
+    description: Reload command
+    usage: /pooandpee reload
+    aliases: [pnp]
