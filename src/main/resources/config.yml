@@ -2,8 +2,8 @@
 # Note: HEX colors (#RRGGBB) and color codes (&c, &a, etc.) are supported
 messages:
   only-players: "#DB3B3BOnly players can use this command!"
-  pee-command: "&#FFFF00You peed!"
-  poo-command: "&#483C2EYou pooped!"
+  pee-command: "#FFFF00You peed!"
+  poo-command: "#483C2EYou pooped!"
   cooldown: "#DB3B3BYou need to wait %time% seconds before using this command again!"
   no-permission: "#DB3B3BYou don't have permission to use this command!"
   reload-success: "#22FF00Poo and Pee plugin reloaded successfully!"
