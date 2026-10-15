@@ -12,6 +12,7 @@
   <name>PooAndPee</name>
 
   <properties>
+    <!-- Java 8 bytecode so the single jar loads on legacy servers and on modern (Java 17/21) servers. -->
     <java.version>1.8</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -27,19 +28,6 @@
           <target>${java.version}</target>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>3.2.4</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
     <resources>
       <resource>
@@ -54,13 +42,11 @@
           <id>papermc-repo</id>
           <url>https://repo.papermc.io/repository/maven-public/</url>
       </repository>
-      <repository>
-          <id>sonatype</id>
-          <url>https://oss.sonatype.org/content/groups/public/</url>
-      </repository>
   </repositories>
 
   <dependencies>
+      <!-- Compile against 1.16.5 API; the plugin only uses API calls available on 1.7+,
+           and hex chat colors are detected reflectively at runtime. -->
       <dependency>
           <groupId>com.destroystokyo.paper</groupId>
           <artifactId>paper-api</artifactId>
