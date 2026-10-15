@@ -1,5 +1,8 @@
 # Messages
-# Note: HEX colors (#RRGGBB) and color codes (&c, &a, etc.) are supported
+# Note: HEX colors (#RRGGBB) and color codes (&c, &a, etc.) are supported.
+# HEX colors require Minecraft 1.16+; on older servers replace them with & codes.
+# Colored wool materials are automatically mapped to legacy WOOL data values
+# on pre-1.13 servers, so the defaults below work everywhere.
 messages:
   only-players: "#DB3B3BOnly players can use this command!"
   pee-command: "#FFFF00You peed!"
@@ -19,7 +22,17 @@ items:
     material: YELLOW_WOOL
     duration: 5
     velocity: 0.5
+    # Lifetime of a single dropped item in ticks (20 = 1 second)
+    lifetime: 20
   poo:
     material: BROWN_WOOL
     duration: 5
     velocity: 0.2
+    lifetime: 20
+
+# Item protection
+settings:
+  # Prevent players from picking up dropped items
+  block-pickup: true
+  # Prevent dropped items from merging with other items on the ground
+  block-merge: true
